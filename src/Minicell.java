@@ -68,9 +68,19 @@ class Table {
         for (int i = 0; i < this.rows; i++) {
             String[] cells = lines[i].split("\\|");
             for (int j = 0; j < this.columns; j++) {
-                Cell c = new Cell(cells[j].trim());
-                this.cells[i][j] = c;
+                if (j < cells.length) {
+                    this.cells[i][j] = new Cell(cells[j].trim());
+                } else {
+                    this.cells[i][j] = new Cell("empty");
+                }
             }
+        }
+        // print the table back
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.columns; j++) {
+                System.out.print(this.cellAt(i, j).value + "|");
+            }
+            System.err.println("\n");
         }
     }
 
@@ -102,11 +112,7 @@ public class Minicell {
         System.out.println(String.format("the dims of the tables: (%dx%d)", dims[0], dims[1]));
         Table table = new Table(dims[0], dims[1]);
         table.parseTable(fileContent);
-        for (int i = 0; i < dims[0]; i++) {
-            for (int j = 0; j < dims[1]; j++) {
-                System.out.println(table.cellAt(i, j).value);
-            }
-        }
+
 
     }
 
@@ -115,6 +121,7 @@ public class Minicell {
         int rows = lines.length;
         int columns;
         if (rows > 0) {
+            // numCols is the number of columns in the header of the file
             int numCols = lines[0].split("\\|").length;
             columns = numCols;
         } else {

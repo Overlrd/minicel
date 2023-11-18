@@ -15,6 +15,3 @@ A       |B
 3       |4
 3       |7
 ```
-
-# References:
- - Mini Excel in C : https://www.youtube.com/watch?v=HCAgvKQDJng

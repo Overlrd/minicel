@@ -12,7 +12,7 @@ enum CellKind {
 enum ExpressionKind {
     EXPR_KIND_NUMBER,
     EXPR_KIND_CELL,
-    EXPR_KIND_OP
+    EXPR_KIND_PLUS
 }
 
 class Expression {
@@ -20,36 +20,21 @@ class Expression {
 }
 
 interface CellValue {
-    String getString();
-    double getNumber();
-    Expression getExpression();
+    Object getValue();
 }
 
 class Cell implements CellValue{
    CellKind kind = CellKind.CELL_KIND_TEXT;
-   String value = "";
+   Object value;
 
    public Cell(String value){
     this.value = value;
    }
 
-   @Override
-   public String getString() {
-       // TODO Auto-generated method stub
-       return null;
-   }
-
-   @Override
-   public double getNumber() {
-       // TODO Auto-generated method stub
-       return 0;
-   }
-
-   @Override
-   public Expression getExpression() {
-       // TODO Auto-generated method stub
-       return null;
-   }
+    @Override
+    public Object getValue() {
+        return value;
+    }
 }
 
 class Table {
@@ -70,6 +55,21 @@ class Table {
             for (int j = 0; j < this.columns; j++) {
                 if (j < cells.length) {
                     this.cells[i][j] = new Cell(cells[j].trim());
+                    Cell c = this.cells[i][j];
+
+                    // if starts with a "=" value is considered an expression
+                    if (((String) c.value).startsWith("=")){
+                        c.kind = CellKind.CELL_KIND_EXPRESSION;
+                    } else {
+                        // if can parse double the value, it's definitely a numeric 
+                        try {
+                            double numValue = Double.parseDouble(c.value.toString());
+                            c.kind = CellKind.CELL_KIND_NUMBER;
+                        // if not it's text
+                        } catch (NumberFormatException e) {
+                            c.kind = CellKind.CELL_KIND_TEXT;
+                        }
+                    }
                 } else {
                     this.cells[i][j] = new Cell("empty");
                 }
@@ -78,9 +78,20 @@ class Table {
         // print the table back
         for (int i = 0; i < this.rows; i++) {
             for (int j = 0; j < this.columns; j++) {
-                System.out.print(this.cellAt(i, j).value + "|");
+                Cell c = this.cellAt(i, j);
+                switch (c.kind) {
+                    case CELL_KIND_TEXT:
+                        System.out.print("TEXT(" + c.value.toString() + ")|");
+                        break;
+                    case CELL_KIND_NUMBER:
+                        System.out.print("NUMBER(" + Double.parseDouble(c.value.toString())+ ")|");
+                        break;
+                    case CELL_KIND_EXPRESSION:
+                        System.out.print("EXPR(" + c.value.toString()+ ")|");
+                        break;
+                }
             }
-            System.err.println("\n");
+            System.out.println("");
         }
     }
 
@@ -109,11 +120,9 @@ public class Minicell {
         }
 
         int[] dims = estimateTableDimensions(fileContent);
-        System.out.println(String.format("the dims of the tables: (%dx%d)", dims[0], dims[1]));
+        System.out.println(String.format("table dims: (%dx%d)", dims[0], dims[1]));
         Table table = new Table(dims[0], dims[1]);
         table.parseTable(fileContent);
-
-
     }
 
     public static int[] estimateTableDimensions(String fileContent) {

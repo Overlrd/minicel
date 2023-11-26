@@ -3,8 +3,11 @@ import java.nio.file.Paths;
 
 public class Helper {
     private static final String IN_FILE_COL_DELIMITER = "|";
+    public final String EMPTY_CELL_VALUE = "null_v";
+    public final String EMPTY_CELL_TYPE = "null_t";
+
     /*
-     * read a csv file in a string buffer and return it 
+     * Read file and return String
      */
     public String read_csv_file(String filePath) {
         String fileContent = "";
@@ -15,10 +18,10 @@ public class Helper {
             System.exit(1);
         }
         return fileContent;
-    } 
+    }
 
     /*
-     * Takes file content and returns a 2D array representing the Excel sheet
+     * String to 2D array
      */
     public String[][] string_to_2d_array(String fileContent) {
         String[] rows = fileContent.split("\n");
@@ -34,13 +37,10 @@ public class Helper {
                 if (j < cells.length) {
                     data[i][j] = cells[j].trim();
                 } else {
-                    data[i][j] = "empty";
+                    data[i][j] = EMPTY_CELL_VALUE;
                 }
             }
         }
         return data;
     }
-    /*
-     * Takes a 2D array representing the Excel sheet and returns a Table Object which hold Cell object for each cell of the array
-     */
 }

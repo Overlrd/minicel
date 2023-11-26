@@ -1,5 +1,5 @@
-A       |B| 78
+A       |B|C
 1       |2
 3       |4
-=A1+B2  |=A2+B1
-hello       |   6| 8 | trop
+=A1 + B2)  |=A2 * B1
+hello       |   6,8

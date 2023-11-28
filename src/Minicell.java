@@ -1,4 +1,6 @@
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Minicell {
     public static void main(String[] args) {
@@ -11,13 +13,18 @@ public class Minicell {
         Helper helper = new Helper();
         String fileContent = helper.read_csv_file(args[0]);
         String[][] data = helper.string_to_2d_array(fileContent);
+        Map<String, Integer> operatorMap = new HashMap<>();
+        operatorMap.put("+", 1);
+        operatorMap.put("-", 1);
+        operatorMap.put("*", 2);
+        operatorMap.put("/", 2);
 
         for (String[] row : data) {
             System.out.println(Arrays.toString(row));
         }
 
-        Table table = new Table(data);
-        ExpressionEvaluator Eval = new ExpressionEvaluator(table);
-        Eval.evaluate(Eval.parse("(A2 * B2) + 3"));
+        Table table = new Table(data, operatorMap);
+        table.build();
+        table.evaluate();
     }
 }

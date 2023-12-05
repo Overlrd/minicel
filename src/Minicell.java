@@ -30,3 +30,4 @@ public class Minicell {
         table.output(outputFilePath);
     }
 }
+
